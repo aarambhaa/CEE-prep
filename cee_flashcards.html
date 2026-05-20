@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEE Medical Entrance Flashcards</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --secondary: #64748b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --border: #e2e8f0;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+  padding: 20px 0;
+}
+
+.header h1 {
+  font-size: clamp(24px, 5vw, 32px);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.header p {
+  font-size: clamp(14px, 3vw, 16px);
+  opacity: 0.9;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.controls {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+.subject-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.difficulty-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.difficulty-btn {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px 16px;
+  border: 2px solid var(--border);
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.difficulty-btn:hover {
+  transform: translateY(-2px);
+}
+
+.difficulty-btn.easy.active {
+  background: #dcfce7;
+  border-color: var(--success);
+  color: #166534;
+}
+
+.difficulty-btn.medium.active {
+  background: #fef3c7;
+  border-color: var(--warning);
+  color: #92400e;
+}
+
+.difficulty-btn.hard.active {
+  background: #fee2e2;
+  border-color: var(--danger);
+  color: #991b1b;
+}
+
+.card-container {
+  perspective: 1000px;
+  margin-bottom: 24px;
+  min-height: 400px;
+}
+
+.flashcard {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 10px 30px var(--shadow);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+  cursor: pointer;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+.question-number {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.difficulty-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.difficulty-badge.easy {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.difficulty-badge.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.difficulty-badge.hard {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.question-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.option {
+  padding: 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg-secondary);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.option:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--secondary);
+  transform: translateX(4px);
+}
+
+.option-label {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.option.selected {
+  background: #dbeafe;
+  border-color: var(--primary);
+}
+
+.option.selected .option-label {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.answer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.correct-answer {
+  background: #dcfce7;
+  border: 2px solid var(--success);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.correct-answer-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--success);
+  margin-bottom: 8px;
+}
+
+.correct-answer-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #166534;
+}
+
+.explanation {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 20px;
+  flex: 1;
+}
+
+.explanation-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.explanation-text {
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+.navigation {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.nav-btn.primary {
+  background: var(--primary);
+  color: white;
+}
+
+.nav-btn.primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.nav-btn.secondary {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 2px solid var(--border);
+}
+
+.nav-btn.secondary:hover {
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.flip-hint {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  margin-top: 16px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .flashcard {
+    padding: 24px;
+    min-height: 380px;
+  }
+  
+  .card-face {
+    padding: 24px;
+  }
+  
+  .question-text {
+    font-size: 16px;
+  }
+  
+  .option {
+    padding: 14px;
+    font-size: 14px;
+  }
+  
+  .nav-btn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>CEE Medical Entrance Prep</h1>
+    <p>Master your medical entrance exam with targeted practice</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-number" id="total-questions">200</span>
+      <span class="stat-label">Total cards</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" id="studied">0</span>
+      <span class="stat-label">Studied</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" id="correct">0</span>
+      <span class="stat-label">Correct</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" id="accuracy">0%</span>
+      <span class="stat-label">Accuracy</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="subject-tabs" id="subject-tabs"></div>
+    <div class="difficulty-selector">
+      <button class="difficulty-btn easy active" data-difficulty="easy">Easy</button>
+      <button class="difficulty-btn medium active" data-difficulty="medium">Medium</button>
+      <button class="difficulty-btn hard active" data-difficulty="hard">Hard</button>
+    </div>
+  </div>
+
+  <div class="card-container">
+    <div class="flashcard" id="flashcard">
+      <div class="card-face card-front">
+        <div class="question-number">
+          <span>Question <span id="current-num">1</span> of <span id="total-num">200</span></span>
+          <span class="difficulty-badge" id="difficulty-badge">Medium</span>
+        </div>
+        <div class="question-text" id="question-text"></div>
+        <div class="options" id="options"></div>
+        <div class="flip-hint">Click card or check answer to reveal explanation</div>
+      </div>
+      <div class="card-face card-back">
+        <div class="question-number">
+          <span>Question <span id="current-num-back">1</span> - Answer</span>
+        </div>
+        <div class="answer-section">
+          <div class="correct-answer">
+            <div class="correct-answer-label">Correct Answer</div>
+            <div class="correct-answer-text" id="correct-answer"></div>
+          </div>
+          <div class="explanation">
+            <div class="explanation-label">Explanation</div>
+            <div class="explanation-text" id="explanation"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="navigation">
+    <button class="nav-btn secondary" id="prev-btn">← Previous</button>
+    <button class="nav-btn primary" id="check-btn">Check Answer</button>
+    <button class="nav-btn primary" id="next-btn">Next →</button>
+  </div>
+</div>
+
+<script>
+const questionBank = {
+  Physics: [
+    {
+      difficulty: 'easy',
+      question: 'A body of mass 2 kg is moving with a velocity of 3 m/s. What is its kinetic energy?',
+      options: ['6 J', '9 J', '12 J', '18 J'],
+      correct: 1,
+      explanation: 'Kinetic Energy = ½mv². KE = ½ × 2 × 3² = ½ × 2 × 9 = 9 J'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Two resistors of 4Ω and 6Ω are connected in parallel. What is their equivalent resistance?',
+      options: ['2.4 Ω', '2.0 Ω', '10 Ω', '5 Ω'],
+      correct: 0,
+      explanation: 'For parallel: 1/R = 1/R₁ + 1/R₂ = 1/4 + 1/6 = (3+2)/12 = 5/12. So R = 12/5 = 2.4 Ω'
+    },
+    {
+      difficulty: 'hard',
+      question: 'A conducting rod of length 1 m moves with velocity 5 m/s perpendicular to a magnetic field of 0.5 T. What is the induced EMF?',
+      options: ['2.5 V', '5.0 V', '1.0 V', '0.5 V'],
+      correct: 0,
+      explanation: 'Motional EMF = BvL = 0.5 × 5 × 1 = 2.5 V. This follows from Faraday\'s law of electromagnetic induction.'
+    },
+    {
+      difficulty: 'easy',
+      question: 'The SI unit of electric charge is:',
+      options: ['Ampere', 'Coulomb', 'Volt', 'Ohm'],
+      correct: 1,
+      explanation: 'Coulomb (C) is the SI unit of electric charge. 1 Coulomb = 1 Ampere × 1 second'
+    },
+    {
+      difficulty: 'medium',
+      question: 'A convex lens of focal length 20 cm forms an image at 60 cm. What is the object distance?',
+      options: ['30 cm', '15 cm', '12 cm', '10 cm'],
+      correct: 0,
+      explanation: 'Using lens formula: 1/f = 1/v - 1/u → 1/20 = 1/60 - 1/u → 1/u = 1/60 - 1/20 = (1-3)/60 = -2/60. So u = -30 cm'
+    },
+    {
+      difficulty: 'hard',
+      question: 'The wavelength of light used in a Young\'s double slit experiment is 6000 Å. If the fringe width is 2 mm and distance to screen is 2 m, what is the slit separation?',
+      options: ['0.6 mm', '0.3 mm', '1.2 mm', '0.9 mm'],
+      correct: 0,
+      explanation: 'Fringe width β = λD/d → d = λD/β = (6000×10⁻¹⁰ × 2)/(2×10⁻³) = 6×10⁻⁴ m = 0.6 mm'
+    },
+    {
+      difficulty: 'easy',
+      question: 'What is the dimensional formula of force?',
+      options: ['[MLT⁻²]', '[MLT⁻¹]', '[ML²T⁻²]', '[ML⁻¹T⁻²]'],
+      correct: 0,
+      explanation: 'Force = Mass × Acceleration = M × [LT⁻²] = [MLT⁻²]'
+    },
+    {
+      difficulty: 'medium',
+      question: 'A projectile is fired at 30° to horizontal with velocity 20 m/s. What is the maximum height reached? (g = 10 m/s²)',
+      options: ['5 m', '10 m', '15 m', '20 m'],
+      correct: 0,
+      explanation: 'H = (u²sin²θ)/(2g) = (20² × sin²30°)/(2×10) = (400 × 0.25)/20 = 5 m'
+    },
+    {
+      difficulty: 'hard',
+      question: 'The time period of a satellite revolving close to Earth\'s surface is approximately (R = 6400 km, g = 10 m/s²):',
+      options: ['85 minutes', '42 minutes', '120 minutes', '60 minutes'],
+      correct: 0,
+      explanation: 'T = 2π√(R/g) = 2π√(6.4×10⁶/10) = 2π×800 ≈ 5027 sec ≈ 84 minutes'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Power is measured in:',
+      options: ['Joule', 'Watt', 'Newton', 'Pascal'],
+      correct: 1,
+      explanation: 'Watt (W) is the SI unit of power. 1 Watt = 1 Joule/second'
+    }
+  ],
+  Chemistry: [
+    {
+      difficulty: 'easy',
+      question: 'What is the electronic configuration of Chlorine (Cl, atomic number 17)?',
+      options: ['2, 8, 7', '2, 8, 8, 1', '2, 7, 8', '2, 8, 6, 1'],
+      correct: 0,
+      explanation: 'Chlorine has 17 electrons distributed as: K shell = 2, L shell = 8, M shell = 7'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Which of the following exhibits maximum ionic character?',
+      options: ['HCl', 'HBr', 'HI', 'HF'],
+      correct: 3,
+      explanation: 'HF has maximum ionic character due to highest electronegativity difference between H and F (2.1)'
+    },
+    {
+      difficulty: 'hard',
+      question: 'The number of stereoisomers possible for 2,3-dibromobutane is:',
+      options: ['2', '3', '4', '6'],
+      correct: 1,
+      explanation: '2,3-dibromobutane has 2 chiral centers. Total stereoisomers = 2ⁿ = 4, but one pair is meso form (identical), giving 3 distinct stereoisomers'
+    },
+    {
+      difficulty: 'easy',
+      question: 'What is the pH of a neutral solution at 25°C?',
+      options: ['0', '7', '14', '1'],
+      correct: 1,
+      explanation: 'At 25°C, pure water has pH = 7, where [H⁺] = [OH⁻] = 10⁻⁷ M'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Which quantum number determines the shape of the orbital?',
+      options: ['Principal (n)', 'Azimuthal (l)', 'Magnetic (m)', 'Spin (s)'],
+      correct: 1,
+      explanation: 'Azimuthal quantum number (l) determines orbital shape: l=0 (s), l=1 (p), l=2 (d), l=3 (f)'
+    },
+    {
+      difficulty: 'hard',
+      question: 'The number of unpaired electrons in Fe²⁺ ion (Z=26) is:',
+      options: ['2', '4', '5', '6'],
+      correct: 1,
+      explanation: 'Fe: [Ar] 3d⁶ 4s². Fe²⁺: [Ar] 3d⁶. In 3d⁶: ↑↓ ↑ ↑ ↑ ↑, giving 4 unpaired electrons'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Which of the following is an aldehyde?',
+      options: ['CH₃COCH₃', 'HCHO', 'CH₃OH', 'CH₃COOH'],
+      correct: 1,
+      explanation: 'HCHO (formaldehyde) is an aldehyde with -CHO functional group'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Nylon-6,6 is a polymer of:',
+      options: ['Hexamethylene diamine and adipic acid', 'Caprolactam', 'Ethylene glycol and terephthalic acid', 'Glycine'],
+      correct: 0,
+      explanation: 'Nylon-6,6 is formed by condensation polymerization of hexamethylene diamine (6 carbons) and adipic acid (6 carbons)'
+    },
+    {
+      difficulty: 'hard',
+      question: 'The enthalpy of neutralization of HCl by NaOH is -57.1 kJ/mol. The enthalpy of neutralization of HCN by NaOH will be:',
+      options: ['Greater than -57.1 kJ/mol', 'Less than -57.1 kJ/mol', 'Equal to -57.1 kJ/mol', 'Zero'],
+      correct: 1,
+      explanation: 'HCN is a weak acid. Part of heat is used in its ionization, so net heat released is less than -57.1 kJ/mol'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Which gas is known as laughing gas?',
+      options: ['NO', 'NO₂', 'N₂O', 'N₂O₅'],
+      correct: 2,
+      explanation: 'Nitrous oxide (N₂O) is known as laughing gas, used as an anesthetic'
+    }
+  ],
+  Zoology: [
+    {
+      difficulty: 'easy',
+      question: 'The powerhouse of the cell is:',
+      options: ['Nucleus', 'Ribosome', 'Mitochondria', 'Golgi body'],
+      correct: 2,
+      explanation: 'Mitochondria produces ATP through cellular respiration, providing energy for cellular activities'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Which hormone regulates blood glucose levels?',
+      options: ['Thyroxine', 'Insulin', 'Adrenaline', 'Cortisol'],
+      correct: 1,
+      explanation: 'Insulin, secreted by pancreatic β-cells, lowers blood glucose by promoting cellular uptake and glycogenesis'
+    },
+    {
+      difficulty: 'hard',
+      question: 'The protein coat surrounding the DNA in tobacco mosaic virus is:',
+      options: ['Nucleocapsid', 'Capsid', 'Capsomere', 'Virion'],
+      correct: 1,
+      explanation: 'Capsid is the protein shell that encloses viral genetic material. In TMV, capsid is composed of capsomere subunits'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Which blood group is called universal donor?',
+      options: ['A', 'B', 'AB', 'O'],
+      correct: 3,
+      explanation: 'O negative blood has no A, B, or Rh antigens, making it compatible with all blood groups'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Nissl\'s granules are found in:',
+      options: ['Axon', 'Dendrite', 'Cyton', 'Synapse'],
+      correct: 2,
+      explanation: 'Nissl\'s granules are masses of rough ER in the cell body (cyton) of neurons, responsible for protein synthesis'
+    },
+    {
+      difficulty: 'hard',
+      question: 'In DNA replication, the enzyme responsible for removing RNA primer is:',
+      options: ['DNA polymerase I', 'DNA polymerase III', 'Primase', 'Helicase'],
+      correct: 0,
+      explanation: 'DNA polymerase I has 5\' to 3\' exonuclease activity that removes RNA primers and fills gaps with DNA'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Which cell organelle is involved in detoxification?',
+      options: ['Lysosome', 'Smooth ER', 'Rough ER', 'Peroxisome'],
+      correct: 1,
+      explanation: 'Smooth endoplasmic reticulum (SER) detoxifies drugs and harmful substances, especially in liver cells'
+    },
+    {
+      difficulty: 'medium',
+      question: 'The theory of natural selection was proposed by:',
+      options: ['Lamarck', 'Darwin', 'Mendel', 'Hugo de Vries'],
+      correct: 1,
+      explanation: 'Charles Darwin proposed the theory of natural selection in "On the Origin of Species" (1859)'
+    },
+    {
+      difficulty: 'hard',
+      question: 'The structure formed by fusion of male and female pronuclei during fertilization is called:',
+      options: ['Blastocyst', 'Morula', 'Zygote nucleus', 'Synkaryon'],
+      correct: 3,
+      explanation: 'Synkaryon is the nucleus formed by fusion of male and female pronuclei, restoring diploid chromosome number'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Which vitamin is essential for blood clotting?',
+      options: ['Vitamin A', 'Vitamin K', 'Vitamin C', 'Vitamin D'],
+      correct: 1,
+      explanation: 'Vitamin K is essential for synthesis of prothrombin and other clotting factors in the liver'
+    }
+  ],
+  Botany: [
+    {
+      difficulty: 'easy',
+      question: 'Photosynthesis takes place in:',
+      options: ['Mitochondria', 'Chloroplast', 'Nucleus', 'Ribosome'],
+      correct: 1,
+      explanation: 'Chloroplasts contain chlorophyll and are the sites of photosynthesis in plant cells'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Which plant hormone is responsible for cell elongation?',
+      options: ['Auxin', 'Cytokinin', 'Abscisic acid', 'Ethylene'],
+      correct: 0,
+      explanation: 'Auxins promote cell elongation, apical dominance, and phototropism in plants'
+    },
+    {
+      difficulty: 'hard',
+      question: 'The number of ATP molecules produced during aerobic respiration from one glucose molecule is:',
+      options: ['2', '38', '36', '30'],
+      correct: 1,
+      explanation: 'Theoretically, 38 ATP are produced: 2 (glycolysis) + 2 (Krebs) + 34 (ETC). Practically ~36-38 depending on shuttle system'
+    },
+    {
+      difficulty: 'easy',
+      question: 'The process of water movement through a plant is called:',
+      options: ['Osmosis', 'Diffusion', 'Transpiration', 'Respiration'],
+      correct: 2,
+      explanation: 'Transpiration is the loss of water vapor from plant surfaces, mainly through stomata in leaves'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Which tissue is responsible for transport of food in plants?',
+      options: ['Xylem', 'Phloem', 'Parenchyma', 'Collenchyma'],
+      correct: 1,
+      explanation: 'Phloem transports organic nutrients, especially sucrose, from leaves to other plant parts (translocation)'
+    },
+    {
+      difficulty: 'hard',
+      question: 'In C4 plants, the first stable product of CO₂ fixation is:',
+      options: ['3-Phosphoglyceric acid', 'Oxaloacetic acid', 'Ribulose bisphosphate', 'Phosphoenol pyruvate'],
+      correct: 1,
+      explanation: 'In C4 pathway, CO₂ is first fixed by PEP carboxylase to form 4-carbon oxaloacetic acid in mesophyll cells'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Which part of the plant conducts water and minerals?',
+      options: ['Phloem', 'Xylem', 'Cortex', 'Epidermis'],
+      correct: 1,
+      explanation: 'Xylem conducts water and dissolved minerals from roots to aerial parts through dead tracheids and vessels'
+    },
+    {
+      difficulty: 'medium',
+      question: 'The law of segregation was proposed by:',
+      options: ['Darwin', 'Mendel', 'Morgan', 'Watson'],
+      correct: 1,
+      explanation: 'Gregor Mendel\'s Law of Segregation states that allele pairs separate during gamete formation and randomly unite at fertilization'
+    },
+    {
+      difficulty: 'hard',
+      question: 'In photorespiration, the enzyme RuBisCO acts as:',
+      options: ['Carboxylase only', 'Oxygenase only', 'Both carboxylase and oxygenase', 'Neither'],
+      correct: 2,
+      explanation: 'RuBisCO has dual activity: carboxylase (normal photosynthesis) and oxygenase (photorespiration) depending on O₂/CO₂ ratio'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Nitrogen fixation is carried out by:',
+      options: ['Rhizobium', 'E. coli', 'Lactobacillus', 'Streptococcus'],
+      correct: 0,
+      explanation: 'Rhizobium bacteria in root nodules of legumes convert atmospheric nitrogen to ammonia (biological nitrogen fixation)'
+    }
+  ],
+  MAT: [
+    {
+      difficulty: 'easy',
+      question: 'If A is taller than B, and B is taller than C, who is the shortest?',
+      options: ['A', 'B', 'C', 'Cannot be determined'],
+      correct: 2,
+      explanation: 'By transitive property: A > B > C, therefore C is the shortest'
+    },
+    {
+      difficulty: 'medium',
+      question: 'Complete the series: 2, 6, 12, 20, 30, __',
+      options: ['40', '42', '44', '46'],
+      correct: 1,
+      explanation: 'Pattern: 1×2, 2×3, 3×4, 4×5, 5×6, 6×7 = 42. Each term is n(n+1)'
+    },
+    {
+      difficulty: 'hard',
+      question: 'A clock shows 3:15. What is the angle between hour and minute hands?',
+      options: ['0°', '7.5°', '15°', '22.5°'],
+      correct: 1,
+      explanation: 'At 3:15, minute hand at 90° from 12. Hour hand at 3 + (15/60)×30 = 97.5°. Angle = 97.5° - 90° = 7.5°'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Which number comes next: 5, 10, 20, 40, __',
+      options: ['60', '80', '100', '120'],
+      correct: 1,
+      explanation: 'Each number is doubled: 5×2=10, 10×2=20, 20×2=40, 40×2=80'
+    },
+    {
+      difficulty: 'medium',
+      question: 'If WORK is coded as 4-12-9-16, how is HOME coded?',
+      options: ['8-12-13-5', '8-15-13-5', '7-14-12-4', '9-16-14-6'],
+      correct: 1,
+      explanation: 'Pattern: Reverse alphabet position. W(23→4), O(15→12), R(18→9), K(11→16). H(8), O(15), M(13), E(5)'
+    },
+    {
+      difficulty: 'hard',
+      question: 'In a family of 6, A is the sister of B. C is the brother of B\'s father. D is the father of C. E is the mother of D. How is A related to E?',
+      options: ['Granddaughter', 'Great-granddaughter', 'Niece', 'Daughter'],
+      correct: 1,
+      explanation: 'E→D(son)→C(grandson)→B\'s father(great-grandson)→B→A(sister). A is E\'s great-granddaughter'
+    },
+    {
+      difficulty: 'easy',
+      question: 'Find the odd one: Dog, Cat, Lion, Table',
+      options: ['Dog', 'Cat', 'Lion', 'Table'],
+      correct: 3,
+      explanation: 'Table is not a living animal, while Dog, Cat, and Lion are animals'
+    },
+    {
+      difficulty: 'medium',
+      question: 'If 3 workers can complete a task in 8 days, how many days will 6 workers take?',
+      options: ['2 days', '4 days', '6 days', '8 days'],
+      correct: 1,
+      explanation: 'Work is inversely proportional to workers. 3×8 = 6×x → x = 24/6 = 4 days'
+    },
+    {
+      difficulty: 'hard',
+      question: 'How many triangles are in a pentagram (5-pointed star)?',
+      options: ['5', '10', '15', '35'],
+      correct: 3,
+      explanation: 'A pentagram has 35 triangles including: 5 small, 5 medium outer, 5 medium inner, 10 combined, 5 large, and 5 very large'
+    },
+    {
+      difficulty: 'easy',
+      question: 'What comes next: A, C, E, G, __',
+      options: ['H', 'I', 'J', 'K'],
+      correct: 1,
+      explanation: 'Pattern: Skip one letter. A→C→E→G→I (skipping B, D, F, H)'
+    }
+  ]
+};
+
+let currentSubject = 'Physics';
+let currentQuestionIndex = 0;
+let selectedOption = null;
+let stats = {
+  studied: 0,
+  correct: 0,
+  total: 0
+};
+let activeDifficulties = new Set(['easy', 'medium', 'hard']);
+let filteredQuestions = [];
+
+function initializeSubjectTabs() {
+  const tabsContainer = document.getElementById('subject-tabs');
+  const subjects = ['Physics', 'Chemistry', 'Zoology', 'Botany', 'MAT'];
+  const weights = { Physics: 50, Chemistry: 50, Zoology: 40, Botany: 40, MAT: 20 };
+  
+  subjects.forEach(subject => {
+    const btn = document.createElement('button');
+    btn.className = `tab-btn ${subject === currentSubject ? 'active' : ''}`;
+    btn.innerHTML = `${subject}<br><span style="font-size:11px;font-weight:400;opacity:0.8">${weights[subject]} marks</span>`;
+    btn.onclick = () => switchSubject(subject);
+    tabsContainer.appendChild(btn);
+  });
+}
+
+function switchSubject(subject) {
+  currentSubject = subject;
+  currentQuestionIndex = 0;
+  selectedOption = null;
+  
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.closest('.tab-btn').classList.add('active');
+  
+  filterQuestions();
+  displayQuestion();
+  flipCardToFront();
+}
+
+function filterQuestions() {
+  filteredQuestions = questionBank[currentSubject].filter(q => 
+    activeDifficulties.has(q.difficulty)
+  );
+  stats.total = filteredQuestions.length;
+  updateStats();
+}
+
+function displayQuestion() {
+  if (filteredQuestions.length === 0) {
+    document.getElementById('question-text').textContent = 'No questions available for selected difficulty levels';
+    document.getElementById('options').innerHTML = '';
+    return;
+  }
+  
+  const question = filteredQuestions[currentQuestionIndex];
+  
+  document.getElementById('question-text').textContent = question.question;
+  document.getElementById('current-num').textContent = currentQuestionIndex + 1;
+  document.getElementById('current-num-back').textContent = currentQuestionIndex + 1;
+  document.getElementById('total-num').textContent = filteredQuestions.length;
+  
+  const badge = document.getElementById('difficulty-badge');
+  badge.textContent = question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1);
+  badge.className = `difficulty-badge ${question.difficulty}`;
+  
+  const optionsContainer = document.getElementById('options');
+  optionsContainer.innerHTML = '';
+  
+  question.options.forEach((option, index) => {
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'option';
+    optionDiv.innerHTML = `
+      <span class="option-label">${String.fromCharCode(65 + index)}</span>
+      <span>${option}</span>
+    `;
+    optionDiv.onclick = () => selectOption(index);
+    optionsContainer.appendChild(optionDiv);
+  });
+  
+  document.getElementById('correct-answer').textContent = 
+    `${String.fromCharCode(65 + question.correct)}. ${question.options[question.correct]}`;
+  document.getElementById('explanation').textContent = question.explanation;
+  
+  document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
+  document.getElementById('next-btn').disabled = currentQuestionIndex === filteredQuestions.length - 1;
+}
+
+function selectOption(index) {
+  selectedOption = index;
+  document.querySelectorAll('.option').forEach((opt, i) => {
+    opt.classList.toggle('selected', i === index);
+  });
+}
+
+function checkAnswer() {
+  if (selectedOption === null) {
+    alert('Please select an option first!');
+    return;
+  }
+  
+  const question = filteredQuestions[currentQuestionIndex];
+  stats.studied++;
+  
+  if (selectedOption === question.correct) {
+    stats.correct++;
+  }
+  
+  updateStats();
+  flipCard();
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.add('flipped');
+}
+
+function flipCardToFront() {
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function nextQuestion() {
+  if (currentQuestionIndex < filteredQuestions.length - 1) {
+    currentQuestionIndex++;
+    selectedOption = null;
+    displayQuestion();
+    flipCardToFront();
+  }
+}
+
+function prevQuestion() {
+  if (currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    selectedOption = null;
+    displayQuestion();
+    flipCardToFront();
+  }
+}
+
+function updateStats() {
+  document.getElementById('total-questions').textContent = Object.values(questionBank).flat().length;
+  document.getElementById('studied').textContent = stats.studied;
+  document.getElementById('correct').textContent = stats.correct;
+  document.getElementById('accuracy').textContent = 
+    stats.studied > 0 ? Math.round((stats.correct / stats.studied) * 100) + '%' : '0%';
+}
+
+document.getElementById('flashcard').onclick = flipCard;
+document.getElementById('check-btn').onclick = checkAnswer;
+document.getElementById('next-btn').onclick = nextQuestion;
+document.getElementById('prev-btn').onclick = prevQuestion;
+
+document.querySelectorAll('.difficulty-btn').forEach(btn => {
+  btn.onclick = function() {
+    const difficulty = this.dataset.difficulty;
+    
+    if (activeDifficulties.has(difficulty)) {
+      activeDifficulties.delete(difficulty);
+      this.classList.remove('active');
+    } else {
+      activeDifficulties.add(difficulty);
+      this.classList.add('active');
+    }
+    
+    currentQuestionIndex = 0;
+    selectedOption = null;
+    filterQuestions();
+    displayQuestion();
+    flipCardToFront();
+  };
+});
+
+initializeSubjectTabs();
+filterQuestions();
+displayQuestion();
+</script>
+</body>
+</html>
